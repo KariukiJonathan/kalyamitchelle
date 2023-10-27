@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kalya Mitchelle Assignment</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "Arial", sans-serif;
+      }
+
+      .button-style {
+        margin-top: 10px;
+        padding: 10px 20px;
+        cursor: pointer;
+      }
+
+      .passport-photo {
+        width: 200px;
+        height: auto;
+      }
+
+      .table-div {
+        margin: 20px 0;
+      }
+
+      .passport-text {
+        text-align: center;
+      }
+
+      .buttons-div {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+    <script type="text/javascript">
+      const localStorage = window.localStorage;
+      const initialize = () => {
+        if (localStorage) {
+          const count = localStorage.getItem("visitCount") || 0;
+          const newCount = parseInt(count) + 1;
+          localStorage.setItem("visitCount", newCount);
+        }
+        updateDOM();
+      };
+
+      const updateDOM = () => {
+        const count = localStorage.getItem("visitCount") || 0;
+        const storedPreferences = localStorage.getItem("preference");
+        const preference = storedPreferences
+          ? JSON.parse(storedPreferences)
+          : {};
+        const tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+
+        let tr = document.createElement("tr");
+        let tdKey = document.createElement("td");
+        tdKey.appendChild(document.createTextNode("visitCount"));
+        let tdValue = document.createElement("td");
+        tdValue.appendChild(document.createTextNode(count));
+        tr.appendChild(tdKey);
+        tr.appendChild(tdValue);
+        tableBody.appendChild(tr);
+
+        tr = document.createElement("tr");
+        tdKey = document.createElement("td");
+        tdKey.appendChild(document.createTextNode("preference"));
+        tdValue = document.createElement("td");
+        tdValue.appendChild(document.createTextNode(storedPreferences || "{}"));
+        tr.appendChild(tdKey);
+        tr.appendChild(tdValue);
+        tableBody.appendChild(tr);
+
+        document.body.style.background = preference.color || "white";
+      };
+
+      const setColorPreference = (color) => {
+        const localStorage = window.localStorage;
+        const preference = { color };
+        localStorage.setItem("preference", JSON.stringify(preference));
+        updateDOM();
+      };
+
+      const removeCount = () => {
+        localStorage.removeItem("visitCount");
+        updateDOM();
+      };
+
+      const clearAll = () => {
+        localStorage.clear();
+        updateDOM();
+      };
+
+      const showAllStoredKeyValues = () => {
+        console.log(`we have ${localStorage.length} values`);
+        const ul = document.getElementById("storedItems");
+        ul.innerHTML = "";
+        for (let index = 0; index < localStorage.length; index++) {
+          const key = localStorage.key(index);
+          var li = document.createElement("li");
+          li.appendChild(
+            document.createTextNode(`${key} = ${localStorage.getItem(key)}`)
+          );
+          ul.appendChild(li);
+        }
+      };
+    </script>
+  </head>
+
+  <body onload="initialize()">
+    <ui id="storedItems"></ui>
+
+    <div class="passport-section">
+      <img src="passport.jpeg" alt="Passport Photo" class="passport-photo" />
+    </div>
+
+    <div class="table-div">
+      <table border="1" style="width: 80%">
+        <tr>
+          <th>Name</th>
+          <th>Registration Number</th>
+        </tr>
+        <tr>
+          <th>Kalya Mitchelle</th>
+          <th>SCT221-0441/2021</th>
+        </tr>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="buttons-div">
+      <button
+        type="button"
+        class="button-style"
+        onclick="setColorPreference('red')"
+      >
+        Red
+      </button>
+      <button
+        type="button"
+        class="button-style"
+        onclick="setColorPreference('green')"
+      >
+        Green
+      </button>
+      <button
+        type="button"
+        class="button-style"
+        onclick="setColorPreference('blue')"
+      >
+        Blue
+      </button>
+      <div id="visitCount"></div>
+      <button type="button" class="button-style" onclick="removeCount()">
+        Remove count
+      </button>
+      <button type="button" class="button-style" onclick="clearAll()">
+        Clear all
+      </button>
+    </div>
+  </body>
+</html>
